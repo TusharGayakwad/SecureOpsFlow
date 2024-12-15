@@ -55,6 +55,7 @@ jobs:
           subject: "SonarQube Quality Gate Failed"
           body: "The SonarQube Quality Gate has failed. Please review the analysis results for more details."
           to: tushargayakwad2910@gmail.com
+          from: tushargayakwad29@gmail.com
 
       - name: Send Passed Email Notification
         if: ${{ env.QA_STATUS == 'SUCCESS' }}
@@ -67,6 +68,7 @@ jobs:
           subject: "SonarQube Quality Gate Passed"
           body: "The SonarQube Quality Gate has passed successfully. Good job!"
           to: tushargayakwad2910@gmail.com
+          from: tushargayakwad29@gmail.com
 
   # build-and-scan:
   #   needs: code-quality
