@@ -32,7 +32,7 @@ jobs:
           quality-gate: SecureOpsFlow_SonarQube_Analysis
 
       - name: Send Email Notification
-        if: steps.sonarqube-quality-gate-check.outputs.project-status == 'ERROR'
+        if: steps.sonarqube-quality-gate-check.outputs.project-status == 'FAILED'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
