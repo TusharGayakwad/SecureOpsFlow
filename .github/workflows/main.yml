@@ -24,11 +24,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
-  #     - name: Send Failure Notification
-  #       if: failure()
-  #       run: |
-  #         echo "Sending failure email to Developer"
-  #         # Add email notification command or integration here.
+      - name: Send Failure Notification
+        if: failure()
+        run: |
+          echo "Sending failure email to Developer"
+          # Add email notification command or integration here.
 
   # build-and-scan:
   #   needs: code-quality
