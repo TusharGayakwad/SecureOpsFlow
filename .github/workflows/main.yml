@@ -16,23 +16,30 @@ jobs:
         uses: sonarsource/sonarqube-scan-action@v4
         with:
           args: >
-            -Dsonar.projectKey=YourProjectKey
+            -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis
             -Dsonar.sources=.
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-      
+
+      - name: SonarQube Quality Gate Check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          quality-gate: SecureOpsFlow_SonarQube_Analysis
+
       - name: Send Email Notification
-        if: failure()
+        if: steps.sonarqube-quality-gate-check.outputs.project-status == 'ERROR'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.example.com
           server_port: 587
           username: tushargayakwad29@gmail.com
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "SonarQube Analysis Failed"
-          body: "The SonarQube analysis failed. Please check the logs for details."
+          subject: "SonarQube Quality Gate Failed"
+          body: "The SonarQube Quality Gate has failed. Please review the analysis results for more details."
           to: tushargayakwad2910@gmail.com
-
 
   # build-and-scan:
   #   needs: code-quality
