@@ -1,3 +1,5 @@
+name: SecureOpsFlow workflow
+
 on:
   push:
     branches:
