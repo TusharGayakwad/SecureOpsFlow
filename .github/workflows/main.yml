@@ -31,6 +31,9 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           quality-gate: SecureOpsFlow_SonarQube_Analysis
 
+      - name: Debug Quality Gate Status
+        run: echo "Quality Gate Status: ${{ steps.sonarqube-quality-gate-check.outputs.project-status }}"
+
       - name: Send Email Notification
         if: steps.sonarqube-quality-gate-check.outputs.project-status == 'FAILED'
         uses: dawidd6/action-send-mail@v3
