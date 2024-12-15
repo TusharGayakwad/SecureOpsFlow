@@ -70,7 +70,6 @@ jobs:
           to: tushargayakwad2910@gmail.com
           from: tushargayakwad29@gmail.com
 
-
   # build-and-scan:
   #   needs: code-quality
   #   runs-on: ubuntu-latest
