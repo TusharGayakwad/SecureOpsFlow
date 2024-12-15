@@ -35,11 +35,21 @@ jobs:
       - name: Set Global Quality Gate Status
         id: set-quality-gate-status
         run: |
-          if [[ "${{ steps.sonarqube-quality-gate-check.outputs.status }}" = "Quality Gate has FAILED." ]]; then
+          status="${{ steps.sonarqube-quality-gate-check.outputs.status }}"
+          echo "Quality Gate Status: $status"
+          if [[ "$status" =~ "FAILED" ]]; then
             echo "QA_STATUS=FAILED" >> $GITHUB_ENV
           else
             echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
           fi
+
+
+        # run: |
+        #   if [[ "${{ steps.sonarqube-quality-gate-check.outputs.status }}" = "Quality Gate has FAILED." ]]; then
+        #     echo "QA_STATUS=FAILED" >> $GITHUB_ENV
+        #   else
+        #     echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
+        #   fi
 
       # - name: Debug Quality Gate Status
       #   run: echo "Quality Gate Status: ${{ env.QA_STATUS }}"
