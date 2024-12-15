@@ -1,0 +1,3 @@
+#Ignore a pem file
+*.pem
+CICD_Pipline_live_project
