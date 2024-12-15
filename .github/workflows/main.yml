@@ -20,69 +20,69 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
-      - name: Send Failure Notification
-        if: failure()
-        run: |
-          echo "Sending failure email to Developer"
-          # Add email notification command or integration here.
+  #     - name: Send Failure Notification
+  #       if: failure()
+  #       run: |
+  #         echo "Sending failure email to Developer"
+  #         # Add email notification command or integration here.
 
-  build-and-scan:
-    needs: code-quality
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  # build-and-scan:
+  #   needs: code-quality
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Log in to Docker Hub
-        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+  #     - name: Log in to Docker Hub
+  #       run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-      - name: Build Docker Image
-        run: docker build -t my-app:${{ github.sha }} .
+  #     - name: Build Docker Image
+  #       run: docker build -t my-app:${{ github.sha }} .
 
-      - name: Scan Docker Image for Vulnerabilities
-        uses: anchore/scan-action@v2
-        with:
-          image: my-app:${{ github.sha }}
+  #     - name: Scan Docker Image for Vulnerabilities
+  #       uses: anchore/scan-action@v2
+  #       with:
+  #         image: my-app:${{ github.sha }}
       
-      - name: Send Failure Notification
-        if: failure()
-        run: |
-          echo "Sending failure email to DevOps Engineer"
-          # Add email notification command or integration here.
+  #     - name: Send Failure Notification
+  #       if: failure()
+  #       run: |
+  #         echo "Sending failure email to DevOps Engineer"
+  #         # Add email notification command or integration here.
 
-  push-to-ecr:
-    needs: build-and-scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+  # push-to-ecr:
+  #   needs: build-and-scan
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v2
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: us-east-1
 
-      - name: Log in to Amazon ECR
-        run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
+  #     - name: Log in to Amazon ECR
+  #       run: |
+  #         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
 
-      - name: Push Docker Image to ECR
-        run: |
-          docker tag my-app:${{ github.sha }} <account-id>.dkr.ecr.us-east-1.amazonaws.com/my-app:${{ github.sha }}
-          docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/my-app:${{ github.sha }}
+  #     - name: Push Docker Image to ECR
+  #       run: |
+  #         docker tag my-app:${{ github.sha }} <account-id>.dkr.ecr.us-east-1.amazonaws.com/my-app:${{ github.sha }}
+  #         docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/my-app:${{ github.sha }}
       
-      - name: Send Approval Email to Manager
-        run: |
-          echo "Sending approval email to Manager"
-          # Add email notification or integration here.
+  #     - name: Send Approval Email to Manager
+  #       run: |
+  #         echo "Sending approval email to Manager"
+  #         # Add email notification or integration here.
 
-  deploy-to-ec2:
-    needs: push-to-ecr
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} ubuntu@<EC2_PUBLIC_IP> << EOF
-          cd /path/to/docker-compose/files
-          docker-compose pull
-          docker-compose up -d
-          EOF
+  # deploy-to-ec2:
+  #   needs: push-to-ecr
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Deploy to EC2
+  #       run: |
+  #         ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} ubuntu@<EC2_PUBLIC_IP> << EOF
+  #         cd /path/to/docker-compose/files
+  #         docker-compose pull
+  #         docker-compose up -d
+  #         EOF
