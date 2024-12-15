@@ -39,9 +39,9 @@ jobs:
           echo "Quality Gate Status: $status"
           if [[ "$status" =~ "FAILED" ]]; then
             echo "QA_STATUS=FAILED" >> $GITHUB_ENV
-          else
-            echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
-          fi
+          # else
+          #   echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
+          # fi
 
 
         # run: |
