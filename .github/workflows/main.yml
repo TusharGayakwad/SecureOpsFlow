@@ -40,11 +40,11 @@ jobs:
             echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
           fi
 
-      - name: Debug Quality Gate Status
-        run: echo "Quality Gate Status: ${{ env.QA_STATUS }}"
+      # - name: Debug Quality Gate Status
+      #   run: echo "Quality Gate Status: ${{ env.QA_STATUS }}"
 
       - name: Send Failed Email Notification
-        if: env.QA_STATUS == 'FAILED'
+        if: ${{ env.QA_STATUS == 'FAILED' }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -56,7 +56,7 @@ jobs:
           to: tushargayakwad2910@gmail.com
 
       - name: Send Passed Email Notification
-        if: env.QA_STATUS == 'SUCCESS'
+        if: ${{ env.QA_STATUS == 'SUCCESS' }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -66,7 +66,6 @@ jobs:
           subject: "SonarQube Quality Gate Passed"
           body: "The SonarQube Quality Gate has passed successfully. Good job!"
           to: tushargayakwad2910@gmail.com
-
 
   # build-and-scan:
   #   needs: code-quality
