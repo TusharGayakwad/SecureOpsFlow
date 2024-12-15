@@ -24,18 +24,18 @@ jobs:
 
       - name: Run SonarQube Scanner (if you want to do manual run)
         run: |
-          sonar-scanner -X \
+          sonar-scanner \
             -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis \
             -Dsonar.sources=. \
             -Dsonar.host.url=$SONAR_HOST_URL \
             -Dsonar.login=$SONAR_TOKEN
 
       
-      # - name: Send Failure Notification
-      #   if: failure()
-      #   run: |
-      #     echo "Sending failure email to Developer"
-      #     # Add email notification command or integration here.
+      - name: Send Failure Notification
+        if: failure()
+        run: |
+          echo "Sending failure email to Developer"
+          # Add email notification command or integration here.
 
   # build-and-scan:
   #   needs: code-quality
