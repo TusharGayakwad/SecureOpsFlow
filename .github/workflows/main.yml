@@ -19,11 +19,18 @@ jobs:
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
       
-      - name: Send Failure Notification
+      - name: Send Email Notification
         if: failure()
-        run: |
-          echo "Sending failure email to Developer"
-          # Add email notification command or integration here.
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.example.com
+          server_port: 587
+          username: tushargayakwad29@gmail.com
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "SonarQube Analysis Failed"
+          body: "The SonarQube analysis failed. Please check the logs for details."
+          to: tushargayakwad2910@gmail.com
+
 
   # build-and-scan:
   #   needs: code-quality
