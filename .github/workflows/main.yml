@@ -1,4 +1,4 @@
-name: SecureOpsFlow workflow
+name: SecureOpsFlow Workflow
 
 on:
   push:
@@ -31,11 +31,20 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           quality-gate: SecureOpsFlow_SonarQube_Analysis
 
-      - name: Debug Quality Gate Status
-        run: echo "Quality Gate Status: ${{ steps.sonarqube-quality-gate-check.outputs.project-status }}"
+      - name: Set Global Quality Gate Status
+        id: set-quality-gate-status
+        run: |
+          if [ "${{ steps.sonarqube-quality-gate-check.outputs.status }}" == "FAILED" ]; then
+            echo "QA_STATUS=FAILED" >> $GITHUB_ENV
+          else
+            echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
+          fi
 
-      - name: Send Email Notification
-        if: steps.sonarqube-quality-gate-check.outputs.project-status == 'FAILED'
+      - name: Debug Quality Gate Status
+        run: echo "Quality Gate Status: ${{ env.QA_STATUS }}"
+
+      - name: Send Failed Email Notification
+        if: env.QA_STATUS == 'FAILED'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -45,6 +54,19 @@ jobs:
           subject: "SonarQube Quality Gate Failed"
           body: "The SonarQube Quality Gate has failed. Please review the analysis results for more details."
           to: tushargayakwad2910@gmail.com
+
+      - name: Send Passed Email Notification
+        if: env.QA_STATUS == 'SUCCESS'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: tushargayakwad29@gmail.com
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "SonarQube Quality Gate Passed"
+          body: "The SonarQube Quality Gate has passed successfully. Good job!"
+          to: tushargayakwad2910@gmail.com
+
 
   # build-and-scan:
   #   needs: code-quality
