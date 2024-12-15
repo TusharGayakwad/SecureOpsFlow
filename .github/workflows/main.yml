@@ -1,35 +1,23 @@
-name: SecureOpsFlow CI/CD Pipeline
-
 on:
   push:
     branches:
       - main
 
 jobs:
-  code-quality:
+  sonarqube:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: SonarQube Scan
+      - name: Run SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v4
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
-          sonar-project-key: SecureOpsFlow_SonarQube_Analysis
-          sonar-host-url: ${{ secrets.SONAR_HOST_URL }}  # Set the URL to your SonarQube instance (or use the environment variable)
-          sonar-login: ${{ secrets.SONAR_TOKEN }}  # Use the secret SONAR_TOKEN securely from GitHub secrets
-
-      - name: Run SonarQube Scanner (if you want to do manual run)
-        run: |
-          sonar-scanner \
-            -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN
-
+          args: >
+            -Dsonar.projectKey=YourProjectKey
+            -Dsonar.sources=.
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
       
       - name: Send Failure Notification
         if: failure()
