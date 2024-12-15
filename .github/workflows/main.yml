@@ -35,7 +35,7 @@ jobs:
         if: steps.sonarqube-quality-gate-check.outputs.project-status == 'ERROR'
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.example.com
+          server_address: smtp.gmail.com
           server_port: 587
           username: tushargayakwad29@gmail.com
           password: ${{ secrets.EMAIL_PASSWORD }}
