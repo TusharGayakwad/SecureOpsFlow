@@ -24,7 +24,7 @@ jobs:
 
       - name: Run SonarQube Scanner (if you want to do manual run)
         run: |
-          sonar-scanner \
+          sonar-scanner -X \
             -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis \
             -Dsonar.sources=. \
             -Dsonar.host.url=$SONAR_HOST_URL \
