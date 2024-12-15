@@ -39,20 +39,9 @@ jobs:
           echo "Quality Gate Status: $status"
           if [[ "$status" =~ "FAILED" ]]; then
             echo "QA_STATUS=FAILED" >> $GITHUB_ENV
-          # else
-          #   echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
-          # fi
-
-
-        # run: |
-        #   if [[ "${{ steps.sonarqube-quality-gate-check.outputs.status }}" = "Quality Gate has FAILED." ]]; then
-        #     echo "QA_STATUS=FAILED" >> $GITHUB_ENV
-        #   else
-        #     echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
-        #   fi
-
-      # - name: Debug Quality Gate Status
-      #   run: echo "Quality Gate Status: ${{ env.QA_STATUS }}"
+          else
+            echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
+          fi
 
       - name: Send Failed Email Notification
         if: ${{ env.QA_STATUS == 'FAILED' }}
