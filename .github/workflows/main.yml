@@ -148,7 +148,7 @@ jobs:
             The Docker image has been successfully pushed to AWS ECR.
 
             **Approve Deployment?**
-            - Click [Approve Deployment](https://github.com/YOUR_ORG/YOUR_REPO/actions/workflows/SecureOpsFlow.yml) to proceed.
+            - Click [Approve Deployment](https://github.com/TusharGayakwad/SecureOpsFlow/blob/main/.github/workflows/main.yml) to proceed.
             - If you disapprove, simply do nothing.
 
             Reply to this email with 'NO' if you want to cancel deployment.
