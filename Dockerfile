@@ -1,13 +1,12 @@
-# Use a vulnerable version of NGINX (intentionally outdated)
-FROM nginx:1.19.0
+# Use a more recent and stable version of NGINX
+FROM nginx:latest
 
-# Install an outdated and vulnerable package
-RUN apt-get update && apt-get install -y wget=1.20.3-1ubuntu1 curl \
+# Install the latest versions of wget and curl
+RUN apt-get update && apt-get install -y wget curl \
     && apt-get clean
 
-
-# Add a fake sensitive file to simulate secrets in the image
-RUN echo "root:root" > /root/password.txt
+# Remove sensitive information from the image
+# (Do not hardcode passwords or secrets)
 
 # Copy a basic index.html file
 COPY index.html /usr/share/nginx/html/index.html
