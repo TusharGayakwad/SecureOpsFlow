@@ -74,7 +74,7 @@ jobs:
       - name: Build Docker Image
         run: |
           echo "Building Docker image..."
-          docker build -t secureopsflow:latest .
+          docker build -t secureopsflow .
 
       - name: Image Scan for Vulnerabilities
         id: image_scan
@@ -101,3 +101,32 @@ jobs:
           attachments: SecureOpsFlow_dockerfile_vulnerablety_report.txt
           to: tushargayakwad2910@gmail.com
           from: tushargayakwad29@gmail.com
+  push-to-ecr:
+    name: Push Docker Image to AWS ECR
+    needs: build-and-scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Tag and Push Docker Image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: secureopsflow
+          IMAGE_TAG: latest
+        run: |
+          docker tag secureopsflow:latest 590183791756.dkr.ecr.ap-south-1.amazonaws.com/secureopsflow:latest
+          docker push 590183791756.dkr.ecr.ap-south-1.amazonaws.com/secureopsflow:latest
+
