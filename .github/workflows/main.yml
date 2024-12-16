@@ -31,21 +31,11 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         continue-on-error: true
 
-      - name: Debug Outputs from SonarQube Quality Gate Check (Using jq)
-        run: |
-          echo "============================================================================================"
-          echo "All Outputs from SonarQube Quality Gate Check (Using jq):"
-          echo "${{ steps.sonarqube-quality-gate-check.outputs }}" | jq .  # This should pretty-print the object
-          echo "============================================================================================"
-
       - name: Set Global Quality Gate Status
         id: set-quality-gate-status
         run: |
-          # Assuming the output from the quality gate check has a field like "status" or "qualityGateStatus"
-          status="${{ steps.sonarqube-quality-gate-check.outputs.status }}"  # Or change this based on the jq output
-          echo "============================================================================================"
+          status="${{ steps.sonarqube-quality-gate-check.outputs.qualityGateStatus }}" 
           echo "Quality Gate Status: $status"
-          echo "============================================================================================"
           if [[ "$status" == "FAILED" ]]; then
             echo "QA_STATUS=FAILED" >> $GITHUB_ENV
           else
