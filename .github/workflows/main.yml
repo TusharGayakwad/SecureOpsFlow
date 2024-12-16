@@ -101,14 +101,14 @@ jobs:
           attachments: SecureOpsFlow_dockerfile_vulnerablety_report.txt
           to: tushargayakwad2910@gmail.com
           from: tushargayakwad29@gmail.com
-  push-to-ecr:
-    name: Push Docker Image to AWS ECR
-    needs: build-and-scan
-    runs-on: ubuntu-latest
+  # push-to-ecr:
+  #   name: Push Docker Image to AWS ECR
+  #   needs: build-and-scan
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # steps:
+      # - name: Checkout code
+      #   uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
