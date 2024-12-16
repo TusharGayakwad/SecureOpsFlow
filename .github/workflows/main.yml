@@ -74,13 +74,13 @@ jobs:
       - name: Build Docker Image
         run: |
           echo "Building Docker image..."
-          docker build -t SecureOpsFlow:latest .
+          docker build -t secureopsflow:latest .
 
       - name: Image Scan for Vulnerabilities
         id: image_scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'SecureOpsFlow:latest'
+          image-ref: 'secureopsflow:latest'
           exit-code: 0   # Allow the scan to proceed without exiting immediately
           ignore-unfixed: true
 
