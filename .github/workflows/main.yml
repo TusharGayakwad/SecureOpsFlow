@@ -42,6 +42,6 @@ jobs:
 
       - name: Get SonarQube Quality Gate Status
         run: |
-          curl -u ${{ secrets.SONAR_TOKEN }}: \
+          curl -u "admin:Pawan@8827209340" \
             "http://${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis"
         continue-on-error: true
