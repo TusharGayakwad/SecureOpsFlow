@@ -132,7 +132,7 @@ jobs:
 
   approval-mail:
     name: Send Approval Email to Manager
-    needs: push-to-ecr
+    needs: build-and-scan
     runs-on: ubuntu-latest
 
     steps:
@@ -152,7 +152,7 @@ jobs:
             - If you disapprove, simply do nothing.
 
             Reply to this email with 'NO' if you want to cancel deployment.
-          to: manager@example.com
+          to: tushargayakwad2910@gmail.com
           from: tushargayakwad29@gmail.com
 
   wait-for-approval:
