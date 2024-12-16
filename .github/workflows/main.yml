@@ -42,6 +42,7 @@ jobs:
           else
             echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
           fi
+          echo "Quality Gate Status: $status"
 
       - name: Send Failed Email Notification
         if: ${{ env.QA_STATUS == 'FAILED' }}
