@@ -33,17 +33,17 @@ jobs:
           fi
 
 
-      - name: Notify Developer on Failure
-        if: failure()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.example.com
-          server_port: 587
-          username: ${{ secrets.EMAIL_USER }}
-          password: ${{ secrets.EMAIL_PASS }}
-          to: developer@example.com
-          subject: "Code Quality Check Failed"
-          body: "The code quality check has failed. Please review the logs."
+      # - name: Notify Developer on Failure
+      #   if: failure()
+      #   uses: dawidd6/action-send-mail@v3
+      #   with:
+      #     server_address: smtp.example.com
+      #     server_port: 587
+      #     username: ${{ secrets.EMAIL_USER }}
+      #     password: ${{ secrets.EMAIL_PASS }}
+      #     to: developer@example.com
+      #     subject: "Code Quality Check Failed"
+      #     body: "The code quality check has failed. Please review the logs."
 
       # - name: Run SonarQube Scan
       #   uses: sonarsource/sonarqube-scan-action@v4
