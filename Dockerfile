@@ -1,18 +1,8 @@
-# Use a more recent and stable version of NGINX
-FROM nginx:latest
+# Use an outdated Node.js image
+FROM node:10
 
-# Install the latest versions of wget and curl
-RUN apt-get update && apt-get install -y wget curl \
-    && apt-get clean
+# Add a vulnerable package.json
+COPY package.json /app/package.json
 
-# Remove sensitive information from the image
-# (Do not hardcode passwords or secrets)
-
-# Copy a basic index.html file
-COPY index.html /usr/share/nginx/html/index.html
-
-# Expose port 80
-EXPOSE 80
-
-# Start the NGINX server
-CMD ["nginx", "-g", "daemon off;"]
+# Install dependencies
+RUN cd /app && npm install
