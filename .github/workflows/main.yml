@@ -35,7 +35,9 @@ jobs:
         id: set-quality-gate-status
         run: |
           status="${{ steps.sonarqube-quality-gate-check.outputs.status }}"
+          echo "============================================================================================"
           echo "Quality Gate Status: $status"
+          echo "============================================================================================"
           if [[ "$status" == "FAILED" ]]; then
             echo "QA_STATUS=FAILED" >> $GITHUB_ENV
           else
