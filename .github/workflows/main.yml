@@ -23,13 +23,12 @@ jobs:
 
       - name: SonarQube Quality Gate Check
         id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@master
+        uses: sonarsource/sonarqube-quality-gate-action@v1.0.0  # Use the correct version for the action
         with:
           pollingTimeoutSec: 600
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          quality-gate: SecureOpsFlow_SonarQube_Analysis
         continue-on-error: true
 
       - name: Set Global Quality Gate Status
@@ -37,7 +36,7 @@ jobs:
         run: |
           status="${{ steps.sonarqube-quality-gate-check.outputs.status }}"
           echo "Quality Gate Status: $status"
-          if [[ "$status" =~ "FAILED" ]]; then
+          if [[ "$status" == "FAILED" ]]; then
             echo "QA_STATUS=FAILED" >> $GITHUB_ENV
           else
             echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
@@ -56,20 +55,6 @@ jobs:
           body: "The SonarQube Quality Gate has failed. Please review the analysis results for more details."
           to: tushargayakwad2910@gmail.com
           from: tushargayakwad29@gmail.com
-
-      - name: Send Passed Email Notification
-        if: ${{ env.QA_STATUS == 'SUCCESS' }}
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 587
-          username: tushargayakwad29@gmail.com
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "SonarQube Quality Gate Passed"
-          body: "The SonarQube Quality Gate has passed successfully. Good job!"
-          to: tushargayakwad2910@gmail.com
-          from: tushargayakwad29@gmail.com
-
   # build-and-scan:
   #   needs: code-quality
   #   runs-on: ubuntu-latest
