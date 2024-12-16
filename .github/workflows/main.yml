@@ -21,39 +21,26 @@ jobs:
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-      - name: SonarQube Quality Gate Check
+      # - name: SonarQube Quality Gate Check
+      #   id: sonarqube-quality-gate-check
+      #   uses: sonarsource/sonarqube-quality-gate-action@v1.0.0
+      #   with:
+      #     pollingTimeoutSec: 600
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #   continue-on-error: true
+
+      - name: SonarQube Server Quality Gate check
         id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@v1.0.0
+        uses: sonarsource/sonarqube-quality-gate-action@master
         with:
           pollingTimeoutSec: 600
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        continue-on-error: true
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
 
-      - name: Set Global Quality Gate Status
-        id: set-quality-gate-status
-        run: |
-          # Print the content of the check-quality-gate.sh script
-          echo "============================================================================================"
-          echo "Contents of check-quality-gate.sh:"
-          cat $GITHUB_ACTION_PATH/script/check-quality-gate.sh
-          echo "============================================================================================"
-          
-          # Print the content of the report-task.txt file
-          echo "============================================================================================"
-          echo "Contents of report-task.txt:"
-          cat $GITHUB_ACTION_PATH/.scannerwork/report-task.txt
-          echo "============================================================================================"
-
-
-          # echo "${{ steps.quality-gate-check.outputs.project-status }}"
-          # echo "${{ steps.quality-gate-check.outputs.quality-gate-result }}"
-          # status="${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}" 
-          # echo "Quality Gate Status: $status"
-          # if [[ "$status" == "FAILED" ]]; then
-          #   echo "QA_STATUS=FAILED" >> $GITHUB_ENV
-          # else
-          #   echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
-          # fi
-          # echo "Quality Gate Status: $status"
+      # Optionally you can use the output from the Quality Gate in another step.
+      # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
+      - name: "Example show SonarQube Server Quality Gate Status value"
+        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
