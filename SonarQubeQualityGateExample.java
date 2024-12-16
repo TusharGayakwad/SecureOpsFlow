@@ -5,46 +5,58 @@ public class SonarQubeQualityGateExample {
         return a + b;
     }
 
-    // A method with some logic that is hard to test
-    public String getStatus(String status) {
-        if (status.equals("active")) {
-            return "Status is active";
-        } else if (status.equals("inactive")) {
-            return "Status is inactive";
-        } else {
-            return "Unknown status";
-        }
+    // Hardcoded password (Critical Vulnerability)
+    public void hardcodedPassword() {
+        String password = "admin123";
+        System.out.println("Password: " + password);
     }
 
-    // A method that does something but can't be easily tested
-    public void logError(String message) {
-        // Simulating logging an error to a file (untestable in unit tests)
-        System.out.println("Error: " + message);
+    // Unused variable example
+    public void unusedVariableExample() {
+        int unusedVar = 100;
     }
 
-    // A method with exception handling which is not fully covered in unit tests
-    public String processData(String data) {
+    // Duplicate code
+    public void duplicateCode1() {
+        System.out.println("Duplicate code example");
+    }
+
+    public void duplicateCode2() {
+        System.out.println("Duplicate code example");
+    }
+
+    // Exception handling with empty catch block
+    public void emptyCatchBlockExample() {
         try {
-            if (data == null) {
-                throw new IllegalArgumentException("Data cannot be null");
-            }
-            return data.toUpperCase();
-        } catch (IllegalArgumentException e) {
-            return "Error: " + e.getMessage();
+            int result = 10 / 0;
+        } catch (Exception e) {
+            // Empty catch block
         }
     }
 
-    // Main method to demonstrate the functionality
-    public static void main(String[] args) {
-        SonarQubeQualityGateExample example = new SonarQubeQualityGateExample();
-
-        // This line will be covered by unit tests
-        System.out.println(example.add(5, 3));
-
-        // This method is difficult to test due to untestable logging logic
-        example.logError("Test error message");
-
-        // This method will fail coverage due to exception handling
-        System.out.println(example.processData(null));
+    // Complex method with high cyclomatic complexity
+    public String complexMethod(int value) {
+        if (value == 1) return "One";
+        else if (value == 2) return "Two";
+        else if (value == 3) return "Three";
+        else if (value == 4) return "Four";
+        else if (value == 5) return "Five";
+        else if (value == 6) return "Six";
+        else if (value == 7) return "Seven";
+        else return "Other";
     }
-}
+
+    // Logging sensitive information
+    public void logSensitiveInfo() {
+        String token = "secret-token-12345";
+        System.out.println("Logging token: " + token);
+    }
+
+    // Commented-out code
+    public void commentedOutCode() {
+        // int x = 10;
+        // System.out.println("Commented out code example");
+    }
+
+    // Main method
+    public static void main(String
