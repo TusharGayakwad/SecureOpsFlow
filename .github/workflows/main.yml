@@ -34,8 +34,21 @@ jobs:
       - name: Set Global Quality Gate Status
         id: set-quality-gate-status
         run: |
-          echo "${{ steps.quality-gate-check.outputs.project-status }}"
-          echo "${{ steps.quality-gate-check.outputs.quality-gate-result }}"
+          # Print the content of the check-quality-gate.sh script
+          echo "============================================================================================"
+          echo "Contents of check-quality-gate.sh:"
+          cat $GITHUB_ACTION_PATH/script/check-quality-gate.sh
+          echo "============================================================================================"
+          
+          # Print the content of the report-task.txt file
+          echo "============================================================================================"
+          echo "Contents of report-task.txt:"
+          cat $GITHUB_ACTION_PATH/.scannerwork/report-task.txt
+          echo "============================================================================================"
+
+
+          # echo "${{ steps.quality-gate-check.outputs.project-status }}"
+          # echo "${{ steps.quality-gate-check.outputs.quality-gate-result }}"
           # status="${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}" 
           # echo "Quality Gate Status: $status"
           # if [[ "$status" == "FAILED" ]]; then
