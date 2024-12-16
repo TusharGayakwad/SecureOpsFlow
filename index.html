@@ -23,36 +23,50 @@
             width: 80%;
             max-width: 600px;
         }
+        img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        /* Duplicated CSS block */
+        p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <img src="http://example.com/profile.jpeg">
+        <!-- Missing alt attribute in img tag, could be flagged as an issue -->
+        <img src="https://assets.onecompiler.app/42zqzb43r/42zqyw545/tushar_profile.jpeg">
         <h1>Tushar Gayakwad</h1>
-        <p>My name is Tushar Gayakwad, I am a DevOps Engineer.</p>
-
-        <!-- Hardcoded sensitive data -->
-        <script>
-            const apiKey = "12345-abcde-SECRET";
-        </script>
-
-        <!-- Unsafe JavaScript -->
-        <div>
-            <form action="#">
-                <label for="name">Enter your name:</label>
-                <input type="text" id="name" name="name">
-                <button type="button" onclick="alert('Hello ' + document.getElementById('name').value)">Submit</button>
-            </form>
+        <div class="intro">
+            <p>My name is Tushar Gayakwad, I am a DevOps Engineer with 2 years of experience. I have a strong knowledge of various DevOps tools and technologies. I'm always eager to learn and grow professionally and personally. Welcome to my personal page!</p>
+            <p>Some more info with the same paragraph styling and structure.</p>
+            <!-- Duplicated content to increase duplicated lines percentage -->
+            <p>More content with the same styling, causing high duplication.</p>
         </div>
-
-        <!-- Deprecated tags -->
-        <marquee>Deprecated Tag Example</marquee>
     </div>
 
 </body>
 </html>
-
 
 <!-- <!DOCTYPE html>
 <html lang="en">
