@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  sonarqube:
+  code-quality-sonarqube:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,11 +27,6 @@ jobs:
           status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
           "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis" | jq -r '.projectStatus.status')
           echo "Quality Gate Status: $status"
-          # if [[ "$status" != "OK" ]]; then  
-          #   echo "Quality Gate failed"
-          #   exit 1
-          # fi
-          #####################################
           if [[ "$status" != "OK" ]]; then
             echo "QA_STATUS=FAILED" >> $GITHUB_ENV
           else
@@ -63,3 +58,45 @@ jobs:
           body: "The SonarQube Quality Gate has passed successfully. Good job!"
           to: tushargayakwad2910@gmail.com
           from: tushargayakwad29@gmail.com
+        
+  build-and-scan:
+    name: Build and Scan Docker Image
+    needs: code-quality-sonarqube
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker Image
+        run: |
+          echo "Building Docker image..."
+          docker build -t SecureOpsFlow:latest .
+
+      - name: Image Scan for Vulnerabilities
+        id: image_scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'SecureOpsFlow:latest'
+          exit-code: 0   # Allow the scan to proceed without exiting immediately
+          ignore-unfixed: true
+
+      - name: Evaluate Scan Results
+        id: scan_eval
+        run: |
+          HIGH_COUNT=$(trivy image --no-progress --severity HIGH,CRITICAL --exit-code 0 SecureOpsFlow:latest | grep -c 'HIGH\|CRITICAL' || true)
+          echo "HIGH_VULNS=${HIGH_COUNT}" >> $GITHUB_ENV
+          
+          echo "Total HIGH/CRITICAL Vulnerabilities Found: $HIGH_COUNT"
+          
+          if [ "$HIGH_COUNT" -gt 70 ]; then
+            echo "STATUS=fail" >> $GITHUB_ENV
+            echo "MESSAGE=Bad Work - Image scan has more than 70 vulnerabilities!" >> $GITHUB_ENV
+            exit 1
+          else
+            echo "STATUS=pass" >> $GITHUB_ENV
+            echo "MESSAGE=Good Job - Image scan passed successfully!" >> $GITHUB_ENV
+          fi
