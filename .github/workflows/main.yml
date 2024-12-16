@@ -12,16 +12,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      - name: SonarQube Scan
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          sonar-scanner \
-            -Dsonar.projectKey=example_project \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN
+      - name: Run SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v4
+        with:
+          args: >
+            -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis
+            -Dsonar.sources=.
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       - name: Notify Developer on Failure
         if: failure()
@@ -35,14 +33,14 @@ jobs:
           subject: "Code Quality Check Failed"
           body: "The code quality check has failed. Please review the logs."
 
-      # - name: Run SonarQube Scan
-      #   uses: sonarsource/sonarqube-scan-action@v4
-      #   with:
-      #     args: >
-      #       -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis
-      #       -Dsonar.sources=.
-      #       -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-      #       -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      - name: Run SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v4
+        with:
+          args: >
+            -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis
+            -Dsonar.sources=.
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       # # - name: SonarQube Quality Gate Check
       # #   id: sonarqube-quality-gate-check
