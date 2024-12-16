@@ -130,3 +130,41 @@ jobs:
           docker tag secureopsflow:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
+  approval-mail:
+    name: Send Approval Email to Manager
+    needs: push-to-ecr
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Approval Mail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: tushargayakwad29@gmail.com
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Approval Required: Deploy Docker Image to EC2"
+          body: |
+            The Docker image has been successfully pushed to AWS ECR.
+
+            **Approve Deployment?**
+            - Click [Approve Deployment](https://github.com/YOUR_ORG/YOUR_REPO/actions/workflows/SecureOpsFlow.yml) to proceed.
+            - If you disapprove, simply do nothing.
+
+            Reply to this email with 'NO' if you want to cancel deployment.
+          to: manager@example.com
+          from: tushargayakwad29@gmail.com
+
+  wait-for-approval:
+    name: Await Manager's Approval
+    needs: approval-mail
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pause for Manual Approval
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: manual-approval-needed
+
+
