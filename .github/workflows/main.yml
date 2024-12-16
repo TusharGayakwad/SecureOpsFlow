@@ -29,19 +29,21 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: "Example show SonarQube Server Quality Gate Status value"
+        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
         continue-on-error: true
 
-      - name: Set Global Quality Gate Status
-        id: set-quality-gate-status
-        run: |
-          status="${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}" 
-          echo "Quality Gate Status: $status"
-          if [[ "$status" == "FAILED" ]]; then
-            echo "QA_STATUS=FAILED" >> $GITHUB_ENV
-          else
-            echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
-          fi
-          echo "Quality Gate Status: $status"
+      # - name: Set Global Quality Gate Status
+      #   id: set-quality-gate-status
+      #   run: |
+      #     status="${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}" 
+      #     echo "Quality Gate Status: $status"
+      #     if [[ "$status" == "FAILED" ]]; then
+      #       echo "QA_STATUS=FAILED" >> $GITHUB_ENV
+      #     else
+      #       echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
+      #     fi
+      #     echo "Quality Gate Status: $status"
 
       - name: Send Failed Email Notification
         if: ${{ env.QA_STATUS == 'FAILED' }}
