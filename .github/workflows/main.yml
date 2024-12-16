@@ -40,7 +40,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
 
-      # Optionally you can use the output from the Quality Gate in another step.
-      # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
-      - name: "Example show SonarQube Server Quality Gate Status value"
-        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
+      - name: Get SonarQube Quality Gate Status
+        run: |
+          curl -u ${{ secrets.SONAR_TOKEN }}: \
+            "http://your-sonarqube-instance-url/api/qualitygates/project_status?projectKey=your_project_key"
+        continue-on-error: true
