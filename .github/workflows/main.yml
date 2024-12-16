@@ -31,7 +31,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       - name: "Example show SonarQube Server Quality Gate Status value"
         run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
-        continue-on-error: true
+        #continue-on-error: true
 
       # - name: Set Global Quality Gate Status
       #   id: set-quality-gate-status
