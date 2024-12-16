@@ -23,13 +23,20 @@ jobs:
 
       - name: SonarQube Quality Gate Check
         id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@v1.0.0  # Use the correct version for the action
+        uses: sonarsource/sonarqube-quality-gate-action@v1.0.0
         with:
           pollingTimeoutSec: 600
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         continue-on-error: true
+
+      - name: Debug Outputs from SonarQube Quality Gate Check
+        run: |
+          echo "============================================================================================"
+          echo "All Outputs from SonarQube Quality Gate Check:"
+          echo "${{ steps.sonarqube-quality-gate-check.outputs }}"
+          echo "============================================================================================"
 
       - name: Set Global Quality Gate Status
         id: set-quality-gate-status
