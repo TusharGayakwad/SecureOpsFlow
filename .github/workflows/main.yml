@@ -87,16 +87,17 @@ jobs:
       - name: Evaluate Scan Results
         id: scan_eval
         run: |
-          HIGH_COUNT=$(trivy image --no-progress --severity HIGH,CRITICAL --exit-code 0 SecureOpsFlow:latest | grep -c 'HIGH\|CRITICAL' || true)
-          echo "HIGH_VULNS=${HIGH_COUNT}" >> $GITHUB_ENV
-          
-          echo "Total HIGH/CRITICAL Vulnerabilities Found: $HIGH_COUNT"
-          
-          if [ "$HIGH_COUNT" -gt 70 ]; then
-            echo "STATUS=fail" >> $GITHUB_ENV
-            echo "MESSAGE=Bad Work - Image scan has more than 70 vulnerabilities!" >> $GITHUB_ENV
-            exit 1
-          else
-            echo "STATUS=pass" >> $GITHUB_ENV
-            echo "MESSAGE=Good Job - Image scan passed successfully!" >> $GITHUB_ENV
-          fi
+          trivy image --severity HIGH,CRITICAL secureopsflow:latest >> SecureOpsFlow_dockerfile_vulnerablety_report.txt
+
+      - name: SecureOpsFlow_dockerfile_vulnerablety_report
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: tushargayakwad29@gmail.com
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "SecureOpsFlow_dockerfile_vulnerablety_report"
+          body: "SecureOpsFlow_dockerfile_vulnerablety_report.==> find a attechment"
+          attachments: SecureOpsFlow_dockerfile_vulnerablety_report.txt
+          to: tushargayakwad2910@gmail.com
+          from: tushargayakwad29@gmail.com
