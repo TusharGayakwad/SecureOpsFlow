@@ -11,37 +11,60 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        
+      - name: SonarQube Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=example_project \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.login=$SONAR_TOKEN
 
-      - name: Run SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v4
+      - name: Notify Developer on Failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
         with:
-          args: >
-            -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis
-            -Dsonar.sources=.
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          server_address: smtp.example.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USER }}
+          password: ${{ secrets.EMAIL_PASS }}
+          to: developer@example.com
+          subject: "Code Quality Check Failed"
+          body: "The code quality check has failed. Please review the logs."
 
-      # - name: SonarQube Quality Gate Check
+      # - name: Run SonarQube Scan
+      #   uses: sonarsource/sonarqube-scan-action@v4
+      #   with:
+      #     args: >
+      #       -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis
+      #       -Dsonar.sources=.
+      #       -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+      #       -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+      # # - name: SonarQube Quality Gate Check
+      # #   id: sonarqube-quality-gate-check
+      # #   uses: sonarsource/sonarqube-quality-gate-action@v1.0.0
+      # #   with:
+      # #     pollingTimeoutSec: 600
+      # #   env:
+      # #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # #   continue-on-error: true
+
+      # - name: SonarQube Server Quality Gate check
       #   id: sonarqube-quality-gate-check
-      #   uses: sonarsource/sonarqube-quality-gate-action@v1.0.0
+      #   uses: sonarsource/sonarqube-quality-gate-action@master
       #   with:
       #     pollingTimeoutSec: 600
       #   env:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
+
+      # - name: Get SonarQube Quality Gate Status
+      #   run: |
+      #     curl -u "admin:Pawan@8827209340" \
+      #       "http://${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis"
       #   continue-on-error: true
-
-      - name: SonarQube Server Quality Gate check
-        id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        with:
-          pollingTimeoutSec: 600
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
-
-      - name: Get SonarQube Quality Gate Status
-        run: |
-          curl -u "admin:Pawan@8827209340" \
-            "http://${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis"
-        continue-on-error: true
