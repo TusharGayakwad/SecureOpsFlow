@@ -44,16 +44,3 @@ jobs:
           #   echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
           # fi
           # echo "Quality Gate Status: $status"
-
-      - name: Send Failed Email Notification
-        if: ${{ env.QA_STATUS == 'FAILED' }}
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 587
-          username: tushargayakwad29@gmail.com
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "SonarQube Quality Gate Failed"
-          body: "The SonarQube Quality Gate has failed. Please review the analysis results for more details."
-          to: tushargayakwad2910@gmail.com
-          from: tushargayakwad29@gmail.com
