@@ -1,14 +1,18 @@
-# Use a vulnerable version of Alpine Linux intentionally
-FROM nginx:1.19.0  # Older version with potential vulnerabilities
+# Use a vulnerable version of NGINX (intentionally outdated)
+FROM nginx:1.19.0
 
-# Add a vulnerable tool to trigger vulnerability detection
-RUN apk add --no-cache curl=7.69.1-r0   # Vulnerable version of curl
+# Install an outdated and vulnerable package
+RUN apt-get update && apt-get install -y wget=1.20.3-1ubuntu1 curl=7.68.0-1ubuntu2.6 \
+    && apt-get clean
 
-# Copy index.html file
+# Add a fake sensitive file to simulate secrets in the image
+RUN echo "root:root" > /root/password.txt
+
+# Copy a basic index.html file
 COPY index.html /usr/share/nginx/html/index.html
 
 # Expose port 80
 EXPOSE 80
 
-# Start nginx
+# Start the NGINX server
 CMD ["nginx", "-g", "daemon off;"]
