@@ -38,7 +38,7 @@
             font-size: 16px;
             line-height: 1.6;
         }
-        /* Duplicated CSS block */
+        /* Repeated CSS block to trigger duplication in styles */
         p {
             color: #555;
             font-size: 16px;
@@ -48,25 +48,35 @@
             color: #555;
             font-size: 16px;
             line-height: 1.6;
+        }
+        .intro {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Missing alt attribute in img tag, could be flagged as an issue -->
-        <img src="https://assets.onecompiler.app/42zqzb43r/42zqyw545/tushar_profile.jpeg">
+        <!-- Fixed alt attribute to clear issues -->
+        <img src="https://assets.onecompiler.app/42zqzb43r/42zqyw545/tushar_profile.jpeg" alt="Tushar Gayakwad Profile Picture">
         <h1>Tushar Gayakwad</h1>
         <div class="intro">
+            <!-- Fixed duplicate content issue -->
             <p>My name is Tushar Gayakwad, I am a DevOps Engineer with 2 years of experience. I have a strong knowledge of various DevOps tools and technologies. I'm always eager to learn and grow professionally and personally. Welcome to my personal page!</p>
-            <p>Some more info with the same paragraph styling and structure.</p>
-            <!-- Duplicated content to increase duplicated lines percentage -->
+            <p>Some more info with the same paragraph styling and structure, which is intentional to trigger duplication.</p>
+            <!-- Added more duplication in content -->
             <p>More content with the same styling, causing high duplication.</p>
         </div>
     </div>
 
+    <script>
+        // Simulating potential coverage issues by adding inline JS (assuming it's not covered by tests)
+        console.log("This is a sample JS script. It might not be covered by tests.");
+    </script>
+
 </body>
 </html>
+
 
 <!-- <!DOCTYPE html>
 <html lang="en">
