@@ -21,6 +21,18 @@ jobs:
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
+      - name: Check SonarQube Quality Gate
+        id: quality-gate
+        run: |
+          status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+          "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis" | jq -r '.projectStatus.status')
+          echo "Quality Gate Status: $status"
+          if [[ "$status" != "OK" ]]; then  
+            echo "Quality Gate failed"
+            exit 1
+          fi
+
+
       - name: Notify Developer on Failure
         if: failure()
         uses: dawidd6/action-send-mail@v3
@@ -33,14 +45,14 @@ jobs:
           subject: "Code Quality Check Failed"
           body: "The code quality check has failed. Please review the logs."
 
-      - name: Run SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v4
-        with:
-          args: >
-            -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis
-            -Dsonar.sources=.
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      # - name: Run SonarQube Scan
+      #   uses: sonarsource/sonarqube-scan-action@v4
+      #   with:
+      #     args: >
+      #       -Dsonar.projectKey=SecureOpsFlow_SonarQube_Analysis
+      #       -Dsonar.sources=.
+      #       -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+      #       -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       # # - name: SonarQube Quality Gate Check
       # #   id: sonarqube-quality-gate-check
