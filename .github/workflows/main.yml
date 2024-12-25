@@ -25,7 +25,7 @@ jobs:
         id: quality-gate
         run: |
           echo "API Response:"
-          curl -u "admin:${{ secrets.SONAR_TOKEN }}" "=${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis"
+          curl -u "admin:${{ secrets.SONAR_TOKEN }}" "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis"
 
 
         
