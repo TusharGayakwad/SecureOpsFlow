@@ -26,11 +26,7 @@ jobs:
         run: |
           STATUS=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis" | jq -r '.projectStatus.status')
           echo "Quality Gate Status: $STATUS"
-
-        
-          # status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis" | jq -r '.projectStatus.status')
-          echo "Quality Gate Status: $status"
-          if [[ "$status" != "OK" ]]; then
+          if [[ "$STATUS" != "OK" ]]; then
             echo "QA_STATUS=FAILED" >> $GITHUB_ENV
           else
             echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
