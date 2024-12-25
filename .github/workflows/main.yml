@@ -97,8 +97,7 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: "SecureOpsFlow Dockerfile Vulnerability Report"
           body: "Find the attached vulnerability report for SecureOpsFlow."
-          attachments: SecureOpsFlow_dockerfile_vulnerability_report.txt
-          attachments: SecureOpsFlow_Trivy_Scan_Report.txt
+          attachments: SecureOpsFlow_dockerfile_vulnerability_report.txt, SecureOpsFlow_Trivy_Scan_Report.txt
           to: tushargayakwad2910@gmail.com
           from: ${{ secrets.OFFICIAL_EMAIL }}
       
