@@ -2,7 +2,7 @@ version: "3"
 
 services:
   web:
-    image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    image: 590183791756.dkr.ecr.ap-south-1.amazonaws.com/secureopsflow:latest
     container_name: SecureOpsFlow_container
     ports:
       - "8080:80"
