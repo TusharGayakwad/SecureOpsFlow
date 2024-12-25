@@ -32,7 +32,7 @@ jobs:
           else
             echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
           fi
-
+          
       - name: Send Failed Email Notification to developer.
         if: ${{ env.QA_STATUS == 'FAILED' }}
         uses: dawidd6/action-send-mail@v3
