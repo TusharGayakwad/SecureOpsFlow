@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  web:
+    image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    container_name: SecureOpsFlow_container
+    ports:
+      - "8080:80"
+    networks:
+      - SecureOpsFlow_network
+
+networks:
+  SecureOpsFlow_network:
+    driver: bridge
