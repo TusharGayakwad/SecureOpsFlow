@@ -24,8 +24,9 @@ jobs:
       - name: Check SonarQube Quality Gate
         id: quality-gate
         run: |
-          response=$(curl -s -u "***:" "***/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis")
+          response=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis")
           echo "Raw Response: $response"
+
 
         
           # status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis" | jq -r '.projectStatus.status')
