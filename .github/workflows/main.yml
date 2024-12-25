@@ -24,18 +24,18 @@ jobs:
       - name: Check SonarQube Quality Gate
         id: quality-gate
         run: |
-          response=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis")
-          echo "Raw Response: $response"
+          # response=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis")
+          # echo "Raw Response: $response"
 
 
         
-          # status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis" | jq -r '.projectStatus.status')
-          # echo "Quality Gate Status: $status"
-          # if [[ "$status" != "OK" ]]; then
-          #   echo "QA_STATUS=FAILED" >> $GITHUB_ENV
-          # else
-          #   echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
-          # fi
+          status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis" | jq -r '.projectStatus.status')
+          echo "Quality Gate Status: $status"
+          if [[ "$status" != "OK" ]]; then
+            echo "QA_STATUS=FAILED" >> $GITHUB_ENV
+          else
+            echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
+          fi
           
   #     - name: Send Failed Email Notification to developer.
   #       if: ${{ env.QA_STATUS == 'FAILED' }}
