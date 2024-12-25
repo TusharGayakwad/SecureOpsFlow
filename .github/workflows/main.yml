@@ -86,6 +86,7 @@ jobs:
         id: scan_eval
         run: |
           trivy image --severity HIGH,CRITICAL secureopsflow:latest >> SecureOpsFlow_dockerfile_vulnerability_report.txt
+          trivy image secureopsflow:latest > SecureOpsFlow_Trivy_Scan_Report.txt
 
       - name: Send Vulnerability Report Email to DevOps guy.
         uses: dawidd6/action-send-mail@v3
@@ -97,6 +98,7 @@ jobs:
           subject: "SecureOpsFlow Dockerfile Vulnerability Report"
           body: "Find the attached vulnerability report for SecureOpsFlow."
           attachments: SecureOpsFlow_dockerfile_vulnerability_report.txt
+          attachments: SecureOpsFlow_Trivy_Scan_Report.txt
           to: tushargayakwad2910@gmail.com
           from: ${{ secrets.OFFICIAL_EMAIL }}
       
