@@ -33,7 +33,7 @@ jobs:
             echo "QA_STATUS=SUCCESS" >> $GITHUB_ENV
           fi
 
-      - name: Send Failed Email Notification
+      - name: Send Failed Email Notification to developer.
         if: ${{ env.QA_STATUS == 'FAILED' }}
         uses: dawidd6/action-send-mail@v3
         with:
@@ -43,10 +43,10 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: "SonarQube Quality Gate Failed"
           body: "The SonarQube Quality Gate has failed. Please review the analysis results for more details."
-          to: tushargayakwad2910@gmail.com
-          from: tushargayakwad29@gmail.com
+          to: ${{ secrets.DEVELOPER_EMAIL }} 
+          from: ${{ secrets.OFFICIAL_EMAIL }} 
 
-      - name: Send Passed Email Notification
+      - name: Send Passed Email Notification to developer.
         if: ${{ env.QA_STATUS == 'SUCCESS' }}
         uses: dawidd6/action-send-mail@v3
         with:
@@ -56,8 +56,8 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: "SonarQube Quality Gate Passed"
           body: "The SonarQube Quality Gate has passed successfully. Good job!"
-          to: tushargayakwad2910@gmail.com
-          from: tushargayakwad29@gmail.com
+          to: ${{ secrets.DEVELOPER_EMAIL }} 
+          from: ${{ secrets.OFFICIAL_EMAIL }}
 
   build-and-scan:
     name: Build and Scan Docker Image
@@ -73,7 +73,7 @@ jobs:
       - name: Build Docker Image
         run: |
           echo "Building Docker image..."
-          docker build -t secureopsflow:latest .
+          docker build -t secureopsflow .
 
       - name: Image Scan for Vulnerabilities
         id: image_scan
@@ -83,12 +83,12 @@ jobs:
           exit-code: 0
           ignore-unfixed: true
 
-      - name: Dockerfile Trivy Check
+      - name: Dockerfile Trivy Check and push on ECR
         id: scan_eval
         run: |
           trivy image --severity HIGH,CRITICAL secureopsflow:latest >> SecureOpsFlow_dockerfile_vulnerability_report.txt
 
-      - name: Send Vulnerability Report Email
+      - name: Send Vulnerability Report Email to DevOps guy.
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -99,7 +99,38 @@ jobs:
           body: "Find the attached vulnerability report for SecureOpsFlow."
           attachments: SecureOpsFlow_dockerfile_vulnerability_report.txt
           to: tushargayakwad2910@gmail.com
-          from: tushargayakwad29@gmail.com
+          from: ${{ secrets.OFFICIAL_EMAIL }}
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+          
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Tag and Push Docker Image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: secureopsflow
+          IMAGE_TAG: latest
+        run: |
+          docker tag secureopsflow:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: Send a mail build complete mail to manager.
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: tushargayakwad29@gmail.com
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "SecureOpsFlow build update"
+          body: "SecureOpsFlow build successfully."
+          to: tushargayakwad2910@gmail.com
+          from: ${{ secrets.OFFICIAL_EMAIL }}
 
   deploy-to-ec2:
     name: Deploy to EC2
@@ -117,14 +148,9 @@ jobs:
       - name: Deploy Application to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-          # Stop and remove the existing container if running
-          docker rm -f secureopsflow || true
-          # Pull the latest image from ECR
-          docker pull ${{ secrets.ECR_REGISTRY }}/secureopsflow:latest
-          # Run the container
-          docker run -d --name secureopsflow -p 80:80 ${{ secrets.ECR_REGISTRY }}/secureopsflow:latest
+          cd /home/ubuntu/SecureOpsFlow
+          docker-compose -f compose.yml up -d 
           EOF
-
       - name: Send Deployment Confirmation Email
         uses: dawidd6/action-send-mail@v3
         with:
@@ -135,4 +161,4 @@ jobs:
           subject: "Deployment Successful: SecureOpsFlow"
           body: "The deployment of SecureOpsFlow to the EC2 instance was successful."
           to: tushargayakwad2910@gmail.com
-          from: tushargayakwad29@gmail.com
+          from: ${{ secrets.OFFICIAL_EMAIL }}
