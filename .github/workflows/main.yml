@@ -24,7 +24,7 @@ jobs:
       - name: Check SonarQube Quality Gate
         id: quality-gate
         run: |
-          STATUS=$(curl -s -u "admin:${{ secrets.SONAR_TOKEN }}" "http://13.127.150.140:9000/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis" | jq -r '.projectStatus.status')
+          STATUS=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "http://13.127.150.140:9000/api/qualitygates/project_status?projectKey=SecureOpsFlow_SonarQube_Analysis" | jq -r '.projectStatus.status')
           echo "Quality Gate Status: $STATUS"
 
         
