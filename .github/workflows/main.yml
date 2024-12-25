@@ -99,7 +99,7 @@ jobs:
           subject: "SecureOpsFlow Dockerfile Vulnerability Report"
           body: "Find the attached vulnerability report for SecureOpsFlow."
           attachments: SecureOpsFlow_dockerfile_vulnerability_report.txt, SecureOpsFlow_Trivy_Scan_Report.txt
-          to: tushargayakwad2910@gmail.com
+          to: ${{ secrets.DEVOPS_GUY_EMAIL }}
           from: ${{ secrets.OFFICIAL_EMAIL }}
       
       - name: Configure AWS Credentials
@@ -130,7 +130,7 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: "SecureOpsFlow build update"
           body: "SecureOpsFlow build successfully."
-          to: tushargayakwad2910@gmail.com
+          to: ${{ secrets.MANAGER_EMAIL }}
           from: ${{ secrets.OFFICIAL_EMAIL }}
 
   deploy-to-ec2:
@@ -149,7 +149,7 @@ jobs:
       - name: Deploy Application to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-          cd /home/ubuntu/SecureOpsFlow
+          cd /home/ubuntu/SecureOpsFlow 
           docker-compose -f compose.yml up -d 
           EOF
       - name: Send Deployment Confirmation Email
@@ -161,5 +161,5 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: "Deployment Successful: SecureOpsFlow"
           body: "The deployment of SecureOpsFlow to the EC2 instance was successful."
-          to: tushargayakwad2910@gmail.com
+          to: ${{ secrets.MANAGER_EMAIL }}
           from: ${{ secrets.OFFICIAL_EMAIL }}
