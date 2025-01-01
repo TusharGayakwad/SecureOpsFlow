@@ -83,7 +83,7 @@ jobs:
           exit-code: 0
           ignore-unfixed: true
 
-      - name: Dockerfile Trivy Check and push on ECR
+      - name: Dockerfile Trivy Check
         id: scan_eval
         run: |
           trivy image --severity HIGH,CRITICAL secureopsflow:latest >> SecureOpsFlow_dockerfile_vulnerability_report.txt
@@ -113,7 +113,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Tag and Push Docker Image to ECR
+      - name: Push Docker Image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: secureopsflow
@@ -121,6 +121,7 @@ jobs:
         run: |
           docker tag secureopsflow:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          
       - name: Send a mail build complete mail to manager.
         uses: dawidd6/action-send-mail@v3
         with:
